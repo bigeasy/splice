@@ -2,11 +2,11 @@
     "name":             "splice",
     "version":          "9.9.9",
     "author":           "Alan Gutierrez <alan@prettyrobots.com>",
-    "description":      "Forward and reverse iteration of a Strata b-tree.",
+    "description":      "Merge an ordered collection of records into a Strata b-tree.",
     "url":              "http://bigeasy.github.com/splice",
     "keywords":
     [
-                        "btree", "leveldb", "levelup", "binary",
+                        "btree", "leveldb", "levelup", "binary", "mvcc",
                         "database", "json", "b-tree", "concurrent", "persistence"
     ],
     "contributors":     [],

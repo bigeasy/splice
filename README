@@ -1,6 +1,6 @@
 Splice
 
-A Swiss Army asynchronous control flow function for JavaScript.
+Merge an ordered collection of records into a Strata b-tree.
 
     Discussion:     https://github.com/bigeasy/splice/issues/1
 
