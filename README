@@ -1,0 +1,17 @@
+Splice
+
+A Swiss Army asynchronous control flow function for JavaScript.
+
+    Discussion:     https://github.com/bigeasy/splice/issues/1
+
+    Documentation:  http://bigeasy.github.io/splice
+    Source:         http://github.com/bigeasy/splice
+    Issues:         http://github.com/bigeasy/splice/issues
+
+    Install:        `npm install splice`
+
+    License:        MIT
+
+To learn everything you want to know about Splice start here:
+
+    http://bigeasy.github.io/splice
