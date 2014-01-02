@@ -11,7 +11,8 @@ Splice.prototype.splice = cadence(function (step) {
     step(function () {
         this._iterator.next(step())
     }, function (record, key) {
-        if (record && key) step(function () {
+        var operate
+        if (record && key) operate = step(function () {
            if (!this._mutator) {this._primary.mutator(key, step(step, function ($) {
                 this._mutator = $
                 return this._mutator.index
@@ -40,17 +41,18 @@ Splice.prototype.splice = cadence(function (step) {
                             ok(result > 0, 'went backwards')
                             this._mutator.unlock()
                             delete this._mutator
-                            step(function () {
+                            step(operate)
+/*                            step(function () {
                                 this._primary.mutator(key, step())
                             }, function ($) {
                                 this._mutator = $
                                 this._mutator.insert(record, key, ~ this._mutator.index, step())
-                            })
+                            })*/
                         }
                     })
                 }
             })
-        })
+        })(1)
         else step(null)
     })()
 })

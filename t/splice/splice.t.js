@@ -19,7 +19,7 @@ require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather)
     }, function () {
         gather(step, strata)
     }, function (records) {
-        deepEqual(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'i', 'h', 'i' ], 'spliced')
+        deepEqual(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i' ], 'spliced')
         strata.close(step())
     })
 })
