@@ -42,12 +42,6 @@ Splice.prototype.splice = cadence(function (step) {
                             this._mutator.unlock()
                             delete this._mutator
                             step(operate)
-/*                            step(function () {
-                                this._primary.mutator(key, step())
-                            }, function ($) {
-                                this._mutator = $
-                                this._mutator.insert(record, key, ~ this._mutator.index, step())
-                            })*/
                         }
                     })
                 }
