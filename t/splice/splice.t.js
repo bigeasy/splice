@@ -1,16 +1,13 @@
 require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather) {
     var splice = require('../..')
     var advance = require('advance')
-    var strata = new Strata({
-        leafSize: 3, branchSize: 3,
-        directory: tmp
-    })
+    var strata = new Strata({ leafSize: 3, branchSize: 3, directory: tmp })
     step(function () {
         serialize(__dirname + '/fixtures/data.json', tmp, step())
     }, function () {
         strata.open(step())
     }, function () {
-        var iterator = advance.forward([ 'b', 'c', 'i', 'j' ], function (record, callback) {
+        var iterator = advance.forward([ 'b', 'c', 'g', 'i', 'j' ], function (record, callback) {
             callback(null, record, record)
         })
         splice(function (incoming, existing) {

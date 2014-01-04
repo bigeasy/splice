@@ -30,9 +30,17 @@ Splice.prototype.splice = cadence(function (step) {
             var operation = this._operation({ record: record, key: key }, existing)
             step(function () {
                 if ((operation == 'insert' || operation == 'delete') && existing) {
-                    this._mutator.remove(index, step())
+                    step(function () {
+                        this._mutator.remove(index, step())
+                    }, function () {
+                        this._mutator.indexOf(key, step())
+                    }, function (index) {
+                        return ~ index
+                    })
+                } else {
+                    return index
                 }
-            }, function () {
+            }, function (index) {
                 if (operation == 'insert') {
                     step(function () {
                         this._mutator.insert(record, key, index, step())
