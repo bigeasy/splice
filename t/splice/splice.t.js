@@ -7,7 +7,7 @@ require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather)
     }, function () {
         strata.open(step())
     }, function () {
-        var iterator = advance.forward([ 'b', 'c', 'g', 'i', 'j' ], function (record, callback) {
+        var iterator = advance([ 'b', 'c', 'g', 'i', 'j' ], function (record, callback) {
             callback(null, record, record)
         })
         splice(function (incoming, existing) {

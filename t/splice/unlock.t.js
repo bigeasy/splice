@@ -8,7 +8,7 @@ require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather)
         callback(new Error('bogus'))
     }
 
-    var iterator = advance.forward([ 'a' ], function (record, callback) {
+    var iterator = advance([ 'a' ], function (record, callback) {
         callback(null, record, record)
     })
     step([function () {
