@@ -49,7 +49,7 @@ Splice.prototype.splice = cadence(function (step) {
                             ok(result > 0, 'went backwards')
                             this._mutator.unlock()
                             delete this._mutator
-                            step(operate)
+                            return [ operate() ]
                         }
                     })
                 }
