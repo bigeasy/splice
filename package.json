@@ -28,8 +28,8 @@
     "devDependencies":
     {
                         "proof":              "0.0.46",
-                        "b-tree":             "0.0.10",
-                        "advance":            "0.0.3"
+                        "b-tree":             "0.0.20",
+                        "advance":            "0.0.7"
     },
     "scripts":
     {

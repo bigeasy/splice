@@ -47,9 +47,12 @@ Splice.prototype.splice = cadence(function (step) {
                     }, function (result) {
                         if (result != 0) {
                             ok(result > 0, 'went backwards')
-                            this._mutator.unlock()
-                            delete this._mutator
-                            return [ operate() ]
+                            step(function () {
+                                this._mutator.unlock(step())
+                            }, function () {
+                                delete this._mutator
+                                return [ operate() ]
+                            })
                         }
                     })
                 }
@@ -59,14 +62,16 @@ Splice.prototype.splice = cadence(function (step) {
     })()
 })
 
-Splice.prototype.unlock = function () {
-    if (this._mutator) this._mutator.unlock()
+Splice.prototype.unlock = function (callback) {
+    if (this._mutator) this._mutator.unlock(callback)
+    else callback()
 }
 
 module.exports = cadence(function (step, operation, primary, iterator) {
     var splice = new Splice(operation, primary, iterator)
     step([function () {
-        splice.unlock()
+        console.log('finalized', step)
+        splice.unlock(step())
     }], function () {
         splice.splice(step())
     })
