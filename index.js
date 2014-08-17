@@ -70,7 +70,6 @@ Splice.prototype.unlock = function (callback) {
 module.exports = cadence(function (step, operation, primary, iterator) {
     var splice = new Splice(operation, primary, iterator)
     step([function () {
-        console.log('finalized', step)
         splice.unlock(step())
     }], function () {
         splice.splice(step())
