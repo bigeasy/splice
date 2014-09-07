@@ -59,6 +59,8 @@ Splice.prototype.splice = cadence(function (step) {
             })
         })(1)
         else step(null)
+    }, function () {
+        setImmediate(step())
     })()
 })
 
