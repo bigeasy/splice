@@ -1,5 +1,6 @@
 ### Issue by Issue
 
+ * Upgrade Strata to 0.0.22. #27.
  * Upgrade Cadence to 0.0.39 #26.
  * Remove debugging output. #22.
  * Upgrade Proof to 0.0.46. #20.
