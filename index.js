@@ -13,19 +13,33 @@ Splice.prototype.splice = cadence(function (step) {
     }, function (record, key) {
         var operate
         if (record && key) operate = step(function () {
-           if (!this._mutator) {this._primary.mutator(key, step(step, function ($) {
-                this._mutator = $
-                return this._mutator.index
-            }))} else {
+           if (!this._mutator) {
+                this._primary.mutator(key, step(step, function ($) {
+                    this._mutator = $
+                    return this._mutator.index
+                }))
+            } else {
                 this._mutator.indexOf(key, step())
             }
         }, function (index) {
-            if (index < 0) step()(null, ~ index, null)
-            else step(function () {
-                this._mutator.get(index, step())
-            }, function (record, key) {
-                step()(null, index, { record: record, key: key })
-            })
+            if (index < 0) {
+                if (this._mutator.length < ~index) {
+                    step(function () {
+                        this._mutator.unlock(step())
+                    }, function () {
+                        delete this._mutator
+                        return [ operate() ]
+                    })
+                } else {
+                    step()(null, ~index, null)
+                }
+            } else {
+                step(function () {
+                    this._mutator.get(index, step())
+                }, function (record, key) {
+                    step()(null, index, { record: record, key: key })
+                })
+            }
         }, function (index, existing) {
             var operation = this._operation({ record: record, key: key }, existing)
             step(function () {
@@ -35,25 +49,15 @@ Splice.prototype.splice = cadence(function (step) {
                     }, function () {
                         this._mutator.indexOf(key, step())
                     }, function (index) {
-                        return ~ index
+                        return [ ~index ]
                     })
                 } else {
-                    return index
+                    return [ index ]
                 }
             }, function (index) {
                 if (operation == 'insert') {
                     step(function () {
                         this._mutator.insert(record, key, index, step())
-                    }, function (result) {
-                        if (result != 0) {
-                            ok(result > 0, 'went backwards')
-                            step(function () {
-                                this._mutator.unlock(step())
-                            }, function () {
-                                delete this._mutator
-                                return [ operate() ]
-                            })
-                        }
                     })
                 }
             })
