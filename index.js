@@ -31,13 +31,13 @@ Splice.prototype.splice = cadence(function (step) {
                         return [ operate() ]
                     })
                 } else {
-                    step()(null, ~index, null)
+                    return [ ~index, null ]
                 }
             } else {
                 step(function () {
                     this._mutator.get(index, step())
                 }, function (record, key) {
-                    step()(null, index, { record: record, key: key })
+                    return [ index, { record: record, key: key } ]
                 })
             }
         }, function (index, existing) {
@@ -62,9 +62,7 @@ Splice.prototype.splice = cadence(function (step) {
                 }
             })
         })(1)
-        else step(null)
-    }, function () {
-        setImmediate(step())
+        else return [ step ]
     })()
 })
 
