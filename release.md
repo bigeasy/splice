@@ -1,5 +1,6 @@
 ### Issue by Issue
 
+ * Upgrade Strata to 0.0.26. #35.
  * Upgrade Proof to 0.0.48. #34.
  * Upgrade Cadence to 0.0.41. #33.
  * Upgrade Strata to 0.0.23. #30.
