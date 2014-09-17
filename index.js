@@ -14,7 +14,7 @@ Splice.prototype.splice = cadence(function (step) {
         var operate
         if (record && key) operate = step(function () {
            if (!this._mutator) {
-                this._primary.mutator(key, step(step, function ($) {
+                this._primary.mutator(key, step(step)(function ($) {
                     this._mutator = $
                     return this._mutator.index
                 }))
