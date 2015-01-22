@@ -29,7 +29,7 @@
     {
                         "proof":              "0.0.50",
                         "b-tree":             "0.0.26",
-                        "advance":            "0.0.7"
+                        "advance":            "0.0.8"
     },
     "scripts":
     {
