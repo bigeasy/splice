@@ -1,4 +1,4 @@
-require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather) {
+require('./proof')(1, function (step, assert) {
     var splice = require('../..')
     var advance = require('advance')
 
@@ -20,7 +20,7 @@ require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather)
         console.log('invoking error')
         splice(function () {}, primary, iterator, step())
     }, function (_, error) {
-        deepEqual(error.message, 'bogus', 'caught error')
+        assert(error.message, 'bogus', 'caught error')
     }], function () {
         console.log('done')
         iterator.unlock(step())

@@ -1,4 +1,4 @@
-require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather) {
+require('./proof')(1, function (step, assert) {
     var splice = require('../..')
     var advance = require('advance')
     var strata = new Strata({ leafSize: 3, branchSize: 3, directory: tmp })
@@ -17,7 +17,7 @@ require('./proof')(1, function (step, serialize, deepEqual, Strata, tmp, gather)
         gather(strata, step())
     }, function (records) {
         console.log(records)
-        deepEqual(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i' ], 'spliced')
+        assert(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i' ], 'spliced')
         strata.close(step())
     })
 })
