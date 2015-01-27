@@ -1,4 +1,4 @@
-require('./proof')(1, function (step, assert) {
+require('./proof')(1, function (async, assert) {
     var splice = require('../..')
     var advance = require('advance')
 
@@ -15,14 +15,14 @@ require('./proof')(1, function (step, assert) {
     })
 
     console.log('starting')
-    step([function () {
+    async([function () {
         var primary = new Bogus()
         console.log('invoking error')
-        splice(function () {}, primary, iterator, step())
+        splice(function () {}, primary, iterator, async())
     }, function (_, error) {
         assert(error.message, 'bogus', 'caught error')
     }], function () {
         console.log('done')
-        iterator.unlock(step())
+        iterator.unlock(async())
     })
 })
