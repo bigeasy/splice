@@ -34,11 +34,8 @@ Splice.prototype.splice = cadence(function (async) {
                     return [ ~index, null ]
                 }
             } else {
-                async(function () {
-                    this._mutator.get(index, async())
-                }, function (record, key) {
-                    return [ index, { record: record, key: key } ]
-                })
+                var item = this._mutator.get(index)
+                return [ index, { record: item.record, key: item.key } ]
             }
         }, function (index, existing) {
             var operation = this._operation({ record: record, key: key }, existing)
