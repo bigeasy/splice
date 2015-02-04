@@ -1,4 +1,4 @@
-var cadence = require('cadence')
+var cadence = require('cadence/redux')
 var ok = require('assert').ok
 
 function Splice (operation, primary, iterator) {
