@@ -20,7 +20,7 @@ Splice.prototype.splice = cadence(function (async) {
                         return (this._mutator = mutator).index
                     })
                 } else {
-                    this._mutator.indexOf(key, async())
+                    return [ this._mutator._indexOf(key) ]
                 }
             }, function (index) {
                 if (index < 0) {
@@ -45,9 +45,7 @@ Splice.prototype.splice = cadence(function (async) {
                         async(function () {
                             this._mutator.remove(index, async())
                         }, function () {
-                            this._mutator.indexOf(key, async())
-                        }, function (index) {
-                            return [ ~index ]
+                            return [ ~this._mutator._indexOf(key) ]
                         })
                     } else {
                         return [ index ]
