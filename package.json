@@ -30,7 +30,7 @@
     {
                         "proof":              "0.0.51",
                         "rimraf":             "~2.2",
-                        "b-tree":             "0.0.29",
+                        "b-tree":             "0.0.30",
                         "advance":            "0.0.8"
     },
     "scripts":
