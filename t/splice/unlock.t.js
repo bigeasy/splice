@@ -19,7 +19,7 @@ require('./proof')(1, function (async, assert) {
         var primary = new Bogus()
         console.log('invoking error')
         splice(function () {}, primary, iterator, async())
-    }, function (_, error) {
+    }, function (error) {
         assert(error.message, 'bogus', 'caught error')
     }], function () {
         console.log('done')
