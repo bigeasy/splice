@@ -1,4 +1,6 @@
-require('./proof')(1, function (async, assert) {
+require('./proof')(1, prove)
+
+function prove (async, assert) {
     var splice = require('../..')
     var advance = require('advance')
     var strata = new Strata({ leafSize: 3, branchSize: 3, directory: tmp })
@@ -20,4 +22,4 @@ require('./proof')(1, function (async, assert) {
         assert(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i' ], 'spliced')
         strata.close(async())
     })
-})
+}

@@ -1,4 +1,6 @@
-require('./proof')(1, function (async, assert) {
+require('./proof')(1, prove)
+
+function prove (async, assert) {
     var splice = require('../..')
     var advance = require('advance')
 
@@ -25,4 +27,4 @@ require('./proof')(1, function (async, assert) {
         console.log('done')
         iterator.unlock(async())
     })
-})
+}
