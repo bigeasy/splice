@@ -1,6 +1,6 @@
 {
     "name":             "splice",
-    "version":          "0.0.15",
+    "version":          "0.0.16",
     "author":           "Alan Gutierrez <alan@prettyrobots.com>",
     "description":      "Merge an ordered collection of records into a Strata b-tree.",
     "keywords":
