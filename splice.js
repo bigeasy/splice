@@ -46,9 +46,7 @@ Splice.prototype.splice = cadence(function (async) {
             var operation = this._operation(item, existing)
             if ((operation == 'insert' || operation == 'delete') && existing) {
                 mutator.remove(index)
-                if (index === 0) {
-                    index++
-                }
+                index = ~mutator.indexOf(item.key, mutator.ghosts)
             }
             if (operation == 'insert') {
                 mutator.insert(item.record, item.key, index)
@@ -57,7 +55,7 @@ Splice.prototype.splice = cadence(function (async) {
             if (item == null) {
                 break
             }
-            index = mutator.indexOf(item.key, index)
+            index = mutator.indexOf(item.key, mutator.ghosts)
         }
         return [ operate ]
     })()

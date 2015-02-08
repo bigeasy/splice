@@ -1,5 +1,6 @@
 ### Issue by Issue
 
+ * Re-lookup with `indexOf`. #63.
  * Use a `prove` named function in tests. #60.
  * Upgrade Cadence to 0.0.52. #59.
  * Upgrade Strata to 0.0.31. #57.
