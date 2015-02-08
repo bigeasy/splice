@@ -2,67 +2,64 @@ var cadence = require('cadence/redux')
 var ok = require('assert').ok
 
 function Splice (operation, primary, iterator) {
+    var _iterator = iterator
+
+    if (Array.isArray(_iterator)) {
+        var index = 0
+        _iterator = function () { return iterator[index++] }
+    }
+
     this._operation = operation
     this._primary = primary
-    this._iterator = iterator
+    this._iterator = _iterator
 }
 
+
 Splice.prototype.splice = cadence(function (async) {
-    var iterator = async(function () {
-        this._iterator.next(async())
-    }, function (record, key) {
-        if (record && key) {
-            var operate = async(function () {
-                if (!this._mutator) {
+    var nextItem = this._iterator
+    var item = nextItem()
+    if (item == null) {
+        return []
+    }
+    var operate = async(function () {
+        this._primary.mutator(item.key, async())
+    }, function (mutator) {
+        this._mutator = mutator
+        var index = mutator.index, existing
+        for (;;) {
+            if (index < 0) {
+                if (mutator.length < ~index) {
                     async(function () {
-                        this._primary.mutator(key, async())
-                    }, function (mutator) {
-                        return (this._mutator = mutator).index
+                        this._mutator = null
+                        mutator.unlock(async())
+                    }, function () {
+                        return [ operate() ]
                     })
+                    return
                 } else {
-                    return [ this._mutator._indexOf(key) ]
+                    index = ~index
+                    existing = null
                 }
-            }, function (index) {
-                if (index < 0) {
-                    if (this._mutator.length < ~index) {
-                        async(function () {
-                            this._mutator.unlock(async())
-                        }, function () {
-                            delete this._mutator
-                            return [ operate() ]
-                        })
-                    } else {
-                        return [ ~index, null ]
-                    }
-                } else {
-                    var item = this._mutator.get(index)
-                    return [ index, { record: item.record, key: item.key } ]
+            } else {
+                existing = mutator.get(index)
+            }
+            var operation = this._operation(item, existing)
+            if ((operation == 'insert' || operation == 'delete') && existing) {
+                mutator.remove(index)
+                if (index === 0) {
+                    index++
                 }
-            }, function (index, existing) {
-                var operation = this._operation({ record: record, key: key }, existing)
-                async(function () {
-                    if ((operation == 'insert' || operation == 'delete') && existing) {
-                        async(function () {
-                            this._mutator.remove(index, async())
-                        }, function () {
-                            return [ ~this._mutator._indexOf(key) ]
-                        })
-                    } else {
-                        return [ index ]
-                    }
-                }, function (index) {
-                    if (operation == 'insert') {
-                        async(function () {
-                            this._mutator.insert(record, key, index, async())
-                        })
-                    }
-                })
-            }, function () {
-                return [ operate ]
-            })
-        } else {
-            return [ iterator ]
+            }
+            if (operation == 'insert') {
+                mutator.insert(item.record, item.key, index)
+            }
+            item = nextItem()
+            if (item == null) {
+                break
+            }
+            index = mutator.indexOf(item.key, index)
         }
+        return [ operate ]
     })()
 })
 
