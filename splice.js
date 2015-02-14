@@ -2,62 +2,69 @@ var cadence = require('cadence/redux')
 var ok = require('assert').ok
 
 function Splice (operation, primary, iterator) {
-    var _iterator = iterator
-
-    if (Array.isArray(_iterator)) {
-        var index = 0
-        _iterator = function () { return iterator[index++] }
-    }
-
     this._operation = operation
     this._primary = primary
-    this._iterator = _iterator
+    this._iterator = iterator
 }
 
 
 Splice.prototype.splice = cadence(function (async) {
-    var nextItem = this._iterator
-    var item = nextItem()
-    if (item == null) {
-        return []
-    }
-    var operate = async(function () {
-        this._primary.mutator(item.key, async())
-    }, function (mutator) {
-        this._mutator = mutator
-        var index = mutator.index, existing
-        for (;;) {
-            if (index < 0) {
-                if (mutator.length < ~index) {
-                    async(function () {
-                        this._mutator = null
-                        mutator.unlock(async())
-                    }, function () {
-                        return [ operate() ]
-                    })
-                    return
-                } else {
-                    index = ~index
-                    existing = null
-                }
-            } else {
-                existing = mutator.get(index)
-            }
-            var operation = this._operation(item, existing)
-            if ((operation == 'insert' || operation == 'delete') && existing) {
-                mutator.remove(index)
-                index = ~mutator.indexOf(item.key, mutator.ghosts)
-            }
-            if (operation == 'insert') {
-                mutator.insert(item.record, item.key, index)
-            }
-            item = nextItem()
-            if (item == null) {
-                break
-            }
-            index = mutator.indexOf(item.key, mutator.ghosts)
+    var i, index, item
+    var iterate = async(function () {
+        this._iterator.next(async())
+        i = 0
+    }, function (items) {
+        if (items == null || items.length === 0) {
+            return [ iterate ]
         }
-        return [ operate ]
+        this._items = items
+        item = items[i++]
+        var mutate = async(function () {
+            var mutator = this._mutator
+            if (mutator == null) {
+                async(function () {
+                    this._primary.mutator(item.key, async())
+                }, function (mutator) {
+                    return [ this._mutator = mutator, mutator.index ]
+                })
+            } else {
+                return [ mutator, mutator.indexOf(item.key, mutator.ghosts) ]
+            }
+        }, function (mutator, index) {
+            var operation, existing
+            for (;;) {
+                if (index < 0) {
+                    if (mutator.length < ~index) {
+                        async(function () {
+                            this._mutator = null
+                            mutator.unlock(async())
+                        }, function () {
+                            return [ mutate() ]
+                        })
+                        return
+                    } else {
+                        index = ~index
+                        existing = null
+                    }
+                } else {
+                    existing = mutator.get(index)
+                }
+                operation = this._operation(item, existing)
+                if ((operation == 'insert' || operation == 'delete') && existing) {
+                    mutator.remove(index)
+                    index = ~mutator.indexOf(item.key, mutator.ghosts)
+                }
+                if (operation == 'insert') {
+                    mutator.insert(item.record, item.key, index)
+                }
+                if (i == items.length) {
+                    this._items = null
+                    return [ iterate() ]
+                }
+                item = items[i++]
+                index = mutator.indexOf(item.key, mutator.ghosts)
+            }
+        })()
     })()
 })
 
