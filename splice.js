@@ -13,12 +13,14 @@ Splice.prototype.splice = cadence(function (async) {
     var iterate = async(function () {
         this._iterator.next(async())
         i = 0
-    }, function (items) {
-        if (items == null || items.length === 0) {
+    }, function (more) {
+        if (!more) {
             return [ iterate ]
         }
-        this._items = items
-        item = items[i++]
+        item = this._iterator.get()
+        if (item == null) {
+            return [ iterate() ]
+        }
         var mutate = async(function () {
             var mutator = this._mutator
             if (mutator == null) {
@@ -57,11 +59,10 @@ Splice.prototype.splice = cadence(function (async) {
                 if (operation == 'insert') {
                     mutator.insert(item.record, item.key, index)
                 }
-                if (i == items.length) {
-                    this._items = null
+                item = this._iterator.get()
+                if (item == null) {
                     return [ iterate() ]
                 }
-                item = items[i++]
                 index = mutator.indexOf(item.key, mutator.ghosts)
             }
         })()

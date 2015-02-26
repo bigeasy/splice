@@ -2,15 +2,19 @@ require('./proof')(1, prove)
 
 function prove (async, assert) {
     var splice = require('../..')
-    var Advance = require('advance')
     var strata = createStrata({ leafSize: 3, branchSize: 3, directory: tmp })
 
     function Multiple () {
-        this._arrays = [[{ key: 'j', record: 'j' }], [{ key: 'k', record: 'k' }]]
+        this._arrays = [[], [{ key: 'j', record: 'j' }], [{ key: 'k', record: 'k' }]]
     }
 
     Multiple.prototype.next = function (callback) {
-        callback(null, this._arrays.shift())
+        this._index = 0
+        callback(null, !!(this._array = this._arrays.shift()))
+    }
+
+    Multiple.prototype.get = function () {
+        return this._array[this._index++]
     }
 
     async(function () {

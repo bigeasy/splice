@@ -1,5 +1,6 @@
 ### Issue by Issue
 
+ * Implement new `get` interface. #68.
  * Use new Advance interface. #66.
  * Re-lookup with `indexOf`. #63.
  * Use a `prove` named function in tests. #60.

@@ -2,7 +2,7 @@ require('./proof')(1, prove)
 
 function prove (async, assert) {
     var splice = require('../..')
-    var Advance = require('advance')
+    var advance = require('advance')
 
     function Bogus () {
     }
@@ -11,14 +11,11 @@ function prove (async, assert) {
         callback(new Error('bogus'))
     }
 
-    console.log('starting')
     async([function () {
         var primary = new Bogus()
-        var iterator = new Advance([{ key: 'a', record: 'a' }])
+        var iterator = advance.forward([{ key: 'a', record: 'a' }])
         splice(function () {}, primary, iterator, async())
     }, function (error) {
         assert(error.message, 'bogus', 'caught error')
-    }], function () {
-        console.log('done')
-    })
+    }])
 }
