@@ -31,7 +31,7 @@
                         "proof":              "0.0.51",
                         "advance":            "0.0.13",
                         "rimraf":             "~2.2",
-                        "b-tree":             "0.0.35"
+                        "b-tree":             "0.0.39"
     },
     "scripts":
     {
