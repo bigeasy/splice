@@ -29,7 +29,7 @@
     "devDependencies":
     {
                         "proof":              "0.0.51",
-                        "advance":            "0.0.13",
+                        "advance":            "0.0.14",
                         "rimraf":             "~2.2",
                         "b-tree":             "0.0.39"
     },

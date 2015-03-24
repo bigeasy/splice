@@ -9,7 +9,7 @@ function prove (async, assert) {
     }, function () {
         strata.open(async())
     }, function () {
-        var iterator = advance.forward([ 'b', 'c', 'g', 'i', 'j' ].map(function (letter) {
+        var iterator = advance.forward(null, null, [ 'b', 'c', 'g', 'i', 'j' ].map(function (letter) {
             return { key: letter, record: letter }
         }))
         splice(function (incoming, existing) {
@@ -21,7 +21,7 @@ function prove (async, assert) {
         assert(records, [ 'a', 'c', 'd', 'e', 'f', 'g', 'h', 'i' ], 'spliced')
         splice(function (incoming, existing) {
             return incoming.record == 'b' || incoming.record == 'j' ? 'delete' : 'insert'
-        }, strata, advance.forward([]), async())
+        }, strata, advance.forward(null, null, []), async())
     }, function () {
         gather(strata, async())
     }, function (records) {

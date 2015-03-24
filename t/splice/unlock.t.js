@@ -13,7 +13,7 @@ function prove (async, assert) {
 
     async([function () {
         var primary = new Bogus()
-        var iterator = advance.forward([{ key: 'a', record: 'a' }])
+        var iterator = advance.forward(null, null, [{ key: 'a', record: 'a' }])
         splice(function () {}, primary, iterator, async())
     }, function (error) {
         assert(error.message, 'bogus', 'caught error')
