@@ -1,5 +1,6 @@
 ### Issue by Issue
 
+ * Upgrade Advance to 0.0.15. #74.
  * Upgrade Advance to 0.0.14. #72.
  * Upgrade Strata to 0.0.39. #70.
  * Implement new `get` interface. #68.
