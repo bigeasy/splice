@@ -1,4 +1,4 @@
-var cadence = require('cadence/redux')
+var cadence = require('cadence')
 var ok = require('assert').ok
 
 function Splice (operation, primary, iterator) {
@@ -15,11 +15,11 @@ Splice.prototype.splice = cadence(function (async) {
         i = 0
     }, function (more) {
         if (!more) {
-            return [ iterate ]
+            return [ iterate.break ]
         }
         item = this._iterator.get()
         if (item == null) {
-            return [ iterate() ]
+            return [ iterate.continue ]
         }
         var mutate = async(function () {
             var mutator = this._mutator
@@ -41,7 +41,7 @@ Splice.prototype.splice = cadence(function (async) {
                             this._mutator = null
                             mutator.unlock(async())
                         }, function () {
-                            return [ mutate() ]
+                            return [ mutate.continue ]
                         })
                         return
                     } else {
@@ -61,7 +61,7 @@ Splice.prototype.splice = cadence(function (async) {
                 }
                 item = this._iterator.get()
                 if (item == null) {
-                    return [ iterate() ]
+                    return [ iterate.continue ]
                 }
                 index = mutator.indexOf(item.key, mutator.ghosts)
             }
