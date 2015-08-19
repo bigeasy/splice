@@ -24,7 +24,7 @@
     "main":             "splice",
     "dependencies":
     {
-                        "cadence":            "0.2.3"
+                        "cadence":            "0.2.5"
     },
     "devDependencies":
     {
