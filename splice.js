@@ -30,13 +30,13 @@ Splice.prototype.splice = cadence(function (async) {
                     return [ this._mutator = mutator, mutator.index ]
                 })
             } else {
-                return [ mutator, mutator.indexOf(item.key, mutator.ghosts) ]
+                return [ mutator, mutator.indexOf(item.key, mutator.page.ghosts) ]
             }
         }, function (mutator, index) {
             var operation, existing
             for (;;) {
                 if (index < 0) {
-                    if (mutator.length < ~index) {
+                    if (mutator.page.items.length < ~index) {
                         async(function () {
                             this._mutator = null
                             mutator.unlock(async())
@@ -49,12 +49,12 @@ Splice.prototype.splice = cadence(function (async) {
                         existing = null
                     }
                 } else {
-                    existing = mutator.get(index)
+                    existing = mutator.page.items[index]
                 }
                 operation = this._operation(item, existing)
                 if ((operation == 'insert' || operation == 'delete') && existing) {
                     mutator.remove(index)
-                    index = ~mutator.indexOf(item.key, mutator.ghosts)
+                    index = ~mutator.indexOf(item.key, mutator.page.ghosts)
                 }
                 if (operation == 'insert') {
                     mutator.insert(item.record, item.key, index)
@@ -63,7 +63,7 @@ Splice.prototype.splice = cadence(function (async) {
                 if (item == null) {
                     return [ iterate.continue ]
                 }
-                index = mutator.indexOf(item.key, mutator.ghosts)
+                index = mutator.indexOf(item.key, mutator.page.ghosts)
             }
         })()
     })()
