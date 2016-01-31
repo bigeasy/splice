@@ -24,10 +24,10 @@
     },
     "devDependencies":
     {
-                        "proof":              "1.0.x",
                         "advance":            "1.0.x",
-                        "rimraf":             "2.4.3",
-                        "b-tree":             "1.0.x"
+                        "b-tree":             "1.0.x",
+                        "proof":              "1.0.x",
+                        "rimraf":             "2.4.3"
     },
     "scripts":
     {
