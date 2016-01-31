@@ -26,7 +26,7 @@
     {
                         "advance":            "1.x",
                         "b-tree":             "1.x",
-                        "proof":              "1.0.x",
+                        "proof":              "1.x",
                         "rimraf":             "2.4.3"
     },
     "scripts":
