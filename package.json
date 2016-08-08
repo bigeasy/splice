@@ -1,36 +1,35 @@
 {
-    "name":             "splice",
-    "version":          "1.0.0",
-    "author":           "Alan Gutierrez <alan@prettyrobots.com>",
-    "description":      "Merge an ordered collection of records into a Strata b-tree.",
+    "name":                 "splice",
+    "version":              "1.0.0",
+    "author":               "Alan Gutierrez <alan@prettyrobots.com>",
+    "description":          "Merge an ordered collection of records into a Strata b-tree.",
     "keywords":
     [
-                        "btree", "leveldb", "levelup", "binary", "mvcc",
-                        "database", "json", "b-tree", "concurrent", "persistence"
+                            "btree", "leveldb", "levelup", "binary", "mvcc",
+                            "database", "json", "b-tree", "concurrent", "persistence"
     ],
-    "contributors":     [],
-    "homepage":         "https://github.com/bigeasy/splice",
-    "bugs":             "https://github.com/bigeasy/splice/issues",
-    "license":          "MIT",
+    "homepage":             "https://github.com/bigeasy/splice",
+    "bugs":                 "https://github.com/bigeasy/splice/issues",
+    "license":              "MIT",
     "repository":
     {
-                        "type": "git",
-                        "url": "http://github.com/bigeasy/splice.git"
+                            "type": "git",
+                            "url": "http://github.com/bigeasy/splice.git"
     },
-    "main":             "splice",
+    "main":                 "splice",
     "dependencies":
     {
-                        "cadence":            "1.x"
+                            "cadence":                      "1.x"
     },
     "devDependencies":
     {
-                        "advance":            "1.x",
-                        "b-tree":             "1.x",
-                        "proof":              "1.x",
-                        "rimraf":             "2.5.1"
+                            "advance":                      "1.x",
+                            "b-tree":                       "1.x",
+                            "proof":                        "1.x",
+                            "rimraf":                       "2.5.1"
     },
     "scripts":
     {
-                        "test": "proof platform win32 && proof test */*/*.t.js || t/test"
+                            "test": "proof platform win32 && proof test */*/*.t.js || t/test"
     }
 }
