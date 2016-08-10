@@ -1,7 +1,7 @@
 require('./proof')(1, prove)
 
 function prove (async, assert) {
-    var splice = require('../..')
+    var splice = require('..')
     var strata = createStrata({ leafSize: 3, branchSize: 3, directory: tmp })
 
     function Multiple () {

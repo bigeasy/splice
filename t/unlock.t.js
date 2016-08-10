@@ -1,7 +1,7 @@
 require('./proof')(1, prove)
 
 function prove (async, assert) {
-    var splice = require('../..')
+    var splice = require('..')
     var advance = require('advance')
 
     function Bogus () {
