@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+  <title>splice.js</title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, target-densitydpi=160dpi, initial-scale=1.0; maximum-scale=1.0; user-scalable=0;">
+  <link rel="stylesheet" media="all" href="docco.css" />
+</head>
+<body>
+  <div id="container">
+    <div id="background"></div>
+
+    <ul class="sections">
+
+          <li id="title">
+              <div class="annotation">
+                  <h1>splice.js</h1>
+              </div>
+          </li>
+
+
+
+        <li id="section-1">
+            <div class="annotation">
+
+              <div class="pilwrap ">
+                <a class="pilcrow" href="#section-1">&#182;</a>
+              </div>
+
+            </div>
+
+            <div class="content"><div class='highlight'><pre><span class="hljs-keyword">var</span> cadence = <span class="hljs-built_in">require</span>(<span class="hljs-string">'cadence'</span>)
+<span class="hljs-keyword">var</span> ok = <span class="hljs-built_in">require</span>(<span class="hljs-string">'assert'</span>).ok
+
+<span class="hljs-function"><span class="hljs-keyword">function</span> <span class="hljs-title">Splice</span> (<span class="hljs-params">operation, primary, iterator</span>) </span>{
+    <span class="hljs-keyword">this</span>._operation = operation
+    <span class="hljs-keyword">this</span>._primary = primary
+    <span class="hljs-keyword">this</span>._iterator = iterator
+}
+
+
+Splice.prototype.splice = cadence(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">async</span>) </span>{
+    <span class="hljs-keyword">var</span> i, index, item
+    <span class="hljs-keyword">var</span> iterate = <span class="hljs-keyword">async</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        <span class="hljs-keyword">this</span>._iterator.next(<span class="hljs-keyword">async</span>())
+        i = <span class="hljs-number">0</span>
+    }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">more</span>) </span>{
+        <span class="hljs-keyword">if</span> (!more) {
+            <span class="hljs-keyword">return</span> [ iterate.break ]
+        }
+        item = <span class="hljs-keyword">this</span>._iterator.get()
+        <span class="hljs-keyword">if</span> (item == <span class="hljs-literal">null</span>) {
+            <span class="hljs-keyword">return</span> [ iterate.continue ]
+        }
+        <span class="hljs-keyword">var</span> mutate = <span class="hljs-keyword">async</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+            <span class="hljs-keyword">var</span> mutator = <span class="hljs-keyword">this</span>._mutator
+            <span class="hljs-keyword">if</span> (mutator == <span class="hljs-literal">null</span>) {
+                <span class="hljs-keyword">async</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                    <span class="hljs-keyword">this</span>._primary.mutator(item.key, <span class="hljs-keyword">async</span>())
+                }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">mutator</span>) </span>{
+                    <span class="hljs-keyword">return</span> [ <span class="hljs-keyword">this</span>._mutator = mutator, mutator.index ]
+                })
+            } <span class="hljs-keyword">else</span> {
+                <span class="hljs-keyword">return</span> [ mutator, mutator.indexOf(item.key, mutator.page.ghosts) ]
+            }
+        }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">mutator, index</span>) </span>{
+            <span class="hljs-keyword">var</span> operation, existing
+            <span class="hljs-keyword">for</span> (;;) {
+                <span class="hljs-keyword">if</span> (index &lt; <span class="hljs-number">0</span>) {
+                    <span class="hljs-keyword">if</span> (mutator.page.items.length &lt; ~index) {
+                        <span class="hljs-keyword">async</span>(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                            <span class="hljs-keyword">this</span>._mutator = <span class="hljs-literal">null</span>
+                            mutator.unlock(<span class="hljs-keyword">async</span>())
+                        }, <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+                            <span class="hljs-keyword">return</span> [ mutate.continue ]
+                        })
+                        <span class="hljs-keyword">return</span>
+                    } <span class="hljs-keyword">else</span> {
+                        index = ~index
+                        existing = <span class="hljs-literal">null</span>
+                    }
+                } <span class="hljs-keyword">else</span> {
+                    existing = mutator.page.items[index]
+                }
+                operation = <span class="hljs-keyword">this</span>._operation(item, existing)
+                <span class="hljs-keyword">if</span> ((operation == <span class="hljs-string">'insert'</span> || operation == <span class="hljs-string">'delete'</span>) &amp;&amp; existing) {
+                    mutator.remove(index)
+                    index = ~mutator.indexOf(item.key, mutator.page.ghosts)
+                }
+                <span class="hljs-keyword">if</span> (operation == <span class="hljs-string">'insert'</span>) {
+                    mutator.insert(item.record, item.key, index)
+                }
+                item = <span class="hljs-keyword">this</span>._iterator.get()
+                <span class="hljs-keyword">if</span> (item == <span class="hljs-literal">null</span>) {
+                    <span class="hljs-keyword">return</span> [ iterate.continue ]
+                }
+                index = mutator.indexOf(item.key, mutator.page.ghosts)
+            }
+        })()
+    })()
+})
+
+Splice.prototype.unlock = <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">callback</span>) </span>{
+    <span class="hljs-keyword">if</span> (<span class="hljs-keyword">this</span>._mutator) <span class="hljs-keyword">this</span>._mutator.unlock(callback)
+    <span class="hljs-keyword">else</span> callback()
+}
+
+<span class="hljs-built_in">module</span>.exports = cadence(<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params">async, operation, primary, iterator</span>) </span>{
+    <span class="hljs-keyword">var</span> splice = <span class="hljs-keyword">new</span> Splice(operation, primary, iterator)
+    <span class="hljs-keyword">async</span>([<span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        splice.unlock(<span class="hljs-keyword">async</span>())
+    }], <span class="hljs-function"><span class="hljs-keyword">function</span> (<span class="hljs-params"></span>) </span>{
+        splice.splice(<span class="hljs-keyword">async</span>())
+    })
+})</pre></div></div>
+
+        </li>
+
+    </ul>
+  </div>
+</body>
+</html>
