@@ -28,7 +28,7 @@
                             "advance":                      "1.0.x",
                             "b-tree":                       "1.0.x",
                             "proof":                        "3.0.x",
-                            "rimraf":                       "2.6.1"
+                            "rimraf":                       "2.6.2"
     },
     "main":                 "splice",
     "scripts":
