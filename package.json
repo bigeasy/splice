@@ -25,7 +25,7 @@
     },
     "devDependencies":
     {
-                            "advance":                      "1.0.x",
+                            "advance":                      "2.0.x",
                             "b-tree":                       "1.0.x",
                             "proof":                        "5.0.x",
                             "rimraf":                       "2.6.2"
