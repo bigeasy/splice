@@ -10,7 +10,7 @@ function Splice (operation, primary, iterator) {
 
 Splice.prototype.splice = cadence(function (async) {
     var i, index, item
-    var iterate = async(function () {
+    var iterate = async.loop([], function () {
         this._iterator.next(async())
         i = 0
     }, function (more) {
@@ -19,9 +19,9 @@ Splice.prototype.splice = cadence(function (async) {
         }
         item = this._iterator.get()
         if (item == null) {
-            return [ iterate.continue ]
+            return [ async.continue ]
         }
-        var mutate = async(function () {
+        var mutate = async.loop([], function () {
             var mutator = this._mutator
             if (mutator == null) {
                 async(function () {
@@ -65,8 +65,8 @@ Splice.prototype.splice = cadence(function (async) {
                 }
                 index = mutator.indexOf(item.key, mutator.page.ghosts)
             }
-        })()
-    })()
+        })
+    })
 })
 
 Splice.prototype.unlock = function (callback) {
