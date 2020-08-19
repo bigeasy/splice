@@ -1,84 +1,35 @@
-var cadence = require('cadence')
-var ok = require('assert').ok
-
-function Splice (operation, primary, iterator) {
-    this._operation = operation
-    this._primary = primary
-    this._iterator = iterator
-}
-
-
-Splice.prototype.splice = cadence(function (async) {
-    var i, index, item
-    var iterate = async.loop([], function () {
-        this._iterator.next(async())
-        i = 0
-    }, function (more) {
-        if (!more) {
-            return [ iterate.break ]
-        }
-        item = this._iterator.get()
-        if (item == null) {
-            return [ async.continue ]
-        }
-        var mutate = async.loop([], function () {
-            var mutator = this._mutator
-            if (mutator == null) {
-                async(function () {
-                    this._primary.mutator(item.key, async())
-                }, function (mutator) {
-                    return [ this._mutator = mutator, mutator.index ]
-                })
+// Now that the rest of the iteration utilities are based on riffle, which
+// slices the b-tree page array, we don't have to think hard at all about
+// updating, but even if we didn't take a slice this implementation releases
+// cursors between synchronous operations, so that as long as you're continuing
+// to merge queries in the midst of the splice, which you must do anyway, you're
+// not going to have any race conditions.
+//
+// There will only ever be one strand updating the primary tree.
+//
+module.exports = async function (operator, strata, paginator) {
+    for await (const page of paginator) {
+        let cursor = { indexOf: () => null, release: () => {} }, index = 0, found = false
+        for (const item of page) {
+            index = cursor.indexOf(item.key, index)
+            if (index == null) {
+                cursor.release()
+                cursor = (await strata.search(item.key)).get()
+                index = cursor.index
+                found = cursor.found
             } else {
-                return [ mutator, mutator.indexOf(item.key, mutator.page.ghosts) ]
+                if (!(found = index >= 0)) {
+                    index = ~index
+                }
             }
-        }, function (mutator, index) {
-            var operation, existing
-            for (;;) {
-                if (index < 0) {
-                    if (mutator.page.items.length < ~index) {
-                        async(function () {
-                            this._mutator = null
-                            mutator.unlock(async())
-                        }, function () {
-                            return [ mutate.continue ]
-                        })
-                        return
-                    } else {
-                        index = ~index
-                        existing = null
-                    }
-                } else {
-                    existing = mutator.page.items[index]
-                }
-                operation = this._operation(item, existing)
-                if ((operation == 'insert' || operation == 'delete') && existing) {
-                    mutator.remove(index)
-                    index = ~mutator.indexOf(item.key, mutator.page.ghosts)
-                }
-                if (operation == 'insert') {
-                    mutator.insert(item.record, item.key, index)
-                }
-                item = this._iterator.get()
-                if (item == null) {
-                    return [ iterate.continue ]
-                }
-                index = mutator.indexOf(item.key, mutator.page.ghosts)
+            const operation = operator(item, found ? cursor.page.items[index] : null)
+            if (operation != null && found) {
+                cursor.remove(index)
             }
-        })
-    })
-})
-
-Splice.prototype.unlock = function (callback) {
-    if (this._mutator) this._mutator.unlock(callback)
-    else callback()
+            if (operation == 'insert') {
+                cursor.insert(item.value, item.key, index)
+            }
+        }
+        cursor.release()
+    }
 }
-
-module.exports = cadence(function (async, operation, primary, iterator) {
-    var splice = new Splice(operation, primary, iterator)
-    async([function () {
-        splice.unlock(async())
-    }], function () {
-        splice.splice(async())
-    })
-})

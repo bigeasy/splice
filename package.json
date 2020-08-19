@@ -21,18 +21,18 @@
     },
     "dependencies":
     {
-                            "cadence":                      "3.0.x"
     },
     "devDependencies":
     {
-                            "advance":                      "2.0.x",
-                            "b-tree":                       "1.0.x",
-                            "proof":                        "5.0.x",
-                            "rimraf":                       "2.6.2"
+                            "advance":                      "3.0.0-alpha.0",
+                            "b-tree":                       "2.0.0-alpha.7",
+                            "proof":                        "^9.0.2",
+                            "riffle":                       "2.0.0-alpha.1",
+                            "twiddle":                      "2.0.0-alpha.0"
     },
     "main":                 "splice",
     "scripts":
     {
-                            "test": "proof platform win32 && proof test */*.t.js || t/test"
+                            "test": "proof test/*.t.js"
     }
 }
