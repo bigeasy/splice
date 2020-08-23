@@ -31,36 +31,36 @@ require('proof')(1, async okay => {
             [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
         ]), item => { return { key: item, value: 'x' } })
         await splice(function (item) {
-            return item.key == 'b' || item.key == 'g' ? 'remove' : 'insert'
+            return item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
         }, strata, mutation)
         const gathered = []
         for await (const items of riffle.forward(strata, Strata.MIN)) {
             for (const item of items) {
-                gathered.push({ key: item.key, value: item.value })
+                gathered.push({ key: item.key, parts: item.parts })
             }
         }
         okay(gathered, [{
-            key: 'a', value: 'x'
+            key: 'a', parts: [ 'a', 'x' ]
         }, {
-            key: 'c', value: 'x'
+            key: 'c', parts: [ 'c', 'x' ]
         }, {
-            key: 'e', value: 'e'
+            key: 'e', parts: [ 'e' ]
         }, {
-            key: 'f', value: 'x'
+            key: 'f', parts: [ 'f', 'x' ]
         }, {
-            key: 'k', value: 'k'
+            key: 'k', parts: [ 'k' ]
         }, {
-            key: 'l', value: 'l'
+            key: 'l', parts: [ 'l' ]
         }, {
-            key: 'p', value: 'x'
+            key: 'p', parts: [ 'p', 'x' ]
         }, {
-            key: 'q', value: 'x'
+            key: 'q', parts: [ 'q', 'x' ]
         }, {
-            key: 'r', value: 'x'
+            key: 'r', parts: [ 'r', 'x' ]
         }, {
-            key: 'v', value: 'v'
+            key: 'v', parts: [ 'v' ]
         }, {
-            key: 'z', value: 'x'
+            key: 'z', parts: [ 'z', 'x' ]
         }], 'splice')
         strata.close()
         await destructible.destructed
