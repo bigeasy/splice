@@ -31,7 +31,10 @@ require('proof')(1, async okay => {
             [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
         ]), item => { return { key: item, value: 'x' } })
         await splice(function (item) {
-            return item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
+            return {
+                key: item.key,
+                parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
+            }
         }, strata, mutation)
         const gathered = []
         for await (const items of riffle.forward(strata, Strata.MIN)) {

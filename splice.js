@@ -13,10 +13,11 @@ module.exports = async function (operator, strata, paginator) {
     for await (const page of paginator) {
         let cursor = Strata.nullCursor(), index = 0, found = false
         for (const item of page) {
-            index = cursor.indexOf(item.key, index)
+            const operation = operator(item)
+            index = cursor.indexOf(operation.key, index)
             if (index == null) {
                 cursor.release()
-                cursor = (await strata.search(item.key)).get()
+                cursor = (await strata.search(operation.key)).get()
                 ; ({ index, found } = cursor)
             } else {
                 if (!(found = index >= 0)) {
@@ -26,9 +27,8 @@ module.exports = async function (operator, strata, paginator) {
             if (found) {
                 cursor.remove(index, writes)
             }
-            const parts = operator(item)
-            if (parts != null) {
-                cursor.insert(index, parts, writes)
+            if (operation.parts != null) {
+                cursor.insert(index, operation.parts, writes)
             }
         }
         cursor.release()
