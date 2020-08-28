@@ -28,7 +28,7 @@
                             "b-tree":                       "2.0.0-alpha.20",
                             "proof":                        "^9.0.2",
                             "riffle":                       "2.0.0-alpha.7",
-                            "twiddle":                      "2.0.0-alpha.2"
+                            "twiddle":                      "2.0.0-alpha.3"
     },
     "main":                 "splice",
     "scripts":
