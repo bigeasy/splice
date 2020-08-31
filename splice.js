@@ -11,25 +11,25 @@ const Strata = require('b-tree')
 module.exports = async function (operator, strata, paginator) {
     const writes = {}
     for await (const page of paginator) {
-        let cursor = Strata.nullCursor(), index = 0, found = false
+        let cursor = Strata.nullCursor(), index, previous = 0, found = false
         for (const item of page) {
             const operation = operator(item)
-            index = cursor.indexOf(operation.key, index)
-            if (index == null) {
-                cursor.release()
-                cursor = (await strata.search(operation.key)).get()
-                ; ({ index, found } = cursor)
-            } else {
-                if (!(found = index >= 0)) {
-                    index = ~index
+            for (;;) {
+                ; ({ index, found } = cursor.indexOf(operation.key, previous))
+                if (index != null) {
+                    break
                 }
+                cursor.release()
+                cursor = await strata.search(operation.key)
+                previous = cursor.page.ghosts
             }
             if (found) {
                 cursor.remove(index, writes)
             }
             if (operation.parts != null) {
-                cursor.insert(index, operation.parts, writes)
+                cursor.insert(index, operation.key, operation.parts, writes)
             }
+            previous = index
         }
         cursor.release()
     }
