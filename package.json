@@ -27,7 +27,7 @@
                             "advance":                      "3.0.0-alpha.2",
                             "b-tree":                       "2.0.0-alpha.25",
                             "proof":                        "^9.0.2",
-                            "riffle":                       "2.0.0-alpha.9",
+                            "riffle":                       "2.0.0-alpha.11",
                             "twiddle":                      "2.0.0-alpha.3"
     },
     "main":                 "splice",
