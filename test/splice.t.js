@@ -66,6 +66,6 @@ require('proof')(1, async okay => {
             key: 'z', parts: [ 'z', 'x' ]
         }], 'splice')
         strata.close()
-        await destructible.destructed
+        await destructible.rejected
     } ()
 })
