@@ -29,7 +29,7 @@
                             "destructible":                 "7.0.0-alpha.8",
                             "proof":                        "^9.0.2",
                             "riffle":                       "2.0.0-alpha.13",
-                            "twiddle":                      "2.0.0-alpha.3"
+                            "twiddle":                      "2.0.0-alpha.4"
     },
     "main":                 "splice",
     "scripts":

@@ -29,7 +29,7 @@ require('proof')(1, async okay => {
         await strata.open()
         const mutation = twiddle(advance.forward([
             [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
-        ]), item => { return { key: item, value: 'x' } })
+        ]), items => items.map(item => { return { key: item, value: 'x' } }))
         await splice(function (item) {
             return {
                 key: item.key,
