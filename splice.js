@@ -21,7 +21,7 @@ module.exports = async function (operator, strata, paginator) {
                 }
                 cursor.release()
                 cursor = await strata.search(operation.key)
-                previous = cursor.page.ghosts
+                previous = 0
             }
             if (found) {
                 cursor.remove(index, writes)
