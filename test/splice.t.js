@@ -27,19 +27,32 @@ require('proof')(1, async okay => {
         const destructible = new Destructible([ 'splice.t' ])
         const strata = new Strata(destructible, { directory, cache: new Cache })
         await strata.open()
-        const mutation = twiddle(advance.forward([
+        const twiddled = twiddle(advance.forward([
             [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
         ]), items => items.map(item => { return { key: item, value: 'x' } }))
+        const mutation = {
+            done: false,
+            next (promises, consume, terminator = mutation) {
+                twiddled.next(promises, consume, terminator)
+                promises.push(Promise.resolve(true))
+            }
+        }
         await splice(function (item) {
             return {
                 key: item.key,
                 parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
             }
         }, strata, mutation)
-        const gathered = []
-        for await (const items of riffle.forward(strata, Strata.MIN)) {
-            for (const item of items) {
-                gathered.push({ key: item.key, parts: item.parts })
+        const gathered = [], promises = []
+        const iterator = riffle.forward(strata, Strata.MIN)
+        while (! iterator.done) {
+            iterator.next(promises, items => {
+                for (const item of items) {
+                    gathered.push({ key: item.key, parts: item.parts })
+                }
+            })
+            while (promises.length != 0) {
+                await promises.shift()
             }
         }
         okay(gathered, [{

@@ -8,30 +8,38 @@ const Strata = require('b-tree')
 //
 // There will only ever be one strand updating the primary tree.
 //
-module.exports = async function (operator, strata, paginator) {
-    const writes = {}
-    for await (const page of paginator) {
-        let cursor = Strata.nullCursor(), index, previous = 0, found = false
-        for (const item of page) {
-            const operation = operator(item)
-            for (;;) {
-                ; ({ index, found } = cursor.indexOf(operation.key, previous))
-                if (index != null) {
-                    break
-                }
-                cursor.release()
-                cursor = await strata.search(operation.key)
-                previous = 0
-            }
-            if (found) {
-                cursor.remove(index, writes)
-            }
-            if (operation.parts != null) {
-                cursor.insert(index, operation.key, operation.parts, writes)
-            }
-            previous = index
+module.exports = async function (operator, strata, iterator) {
+    function upsert (cursor, index, found, { key, parts }) {
+        if (found) {
+            cursor.remove(index, writes)
         }
-        cursor.release()
+        if (parts != null) {
+            cursor.insert(index, key, parts, writes)
+        }
+    }
+    const writes = {}, promises = [], scope = { items: null }
+    while (! iterator.done) {
+        iterator.next(promises, items => scope.items = items)
+        while (promises.length != 0) {
+            await promises.shift()
+        }
+        const operations = scope.items.map(item => operator(item))
+        while (operations.length != 0) {
+            strata.search(promises, operations[0].key, cursor => {
+                let { found, index } = cursor
+                upsert(cursor, index, found, operations.shift())
+                while (operations.length != 0) {
+                    ({ index, found } = cursor.indexOf(operations[0].key, index))
+                    if (index == null) {
+                        break
+                    }
+                    upsert(cursor, index, found, operations.shift())
+                }
+            })
+            while (promises.length != 0) {
+                await promises.shift()
+            }
+        }
     }
     await Strata.flush(writes)
 }
