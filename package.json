@@ -28,7 +28,7 @@
                             "b-tree":                       "2.0.0-alpha.46",
                             "destructible":                 "7.0.0-alpha.11",
                             "proof":                        "^9.0.2",
-                            "riffle":                       "2.0.0-alpha.25",
+                            "riffle":                       "2.0.0-alpha.29",
                             "twiddle":                      "2.0.0-alpha.6"
     },
     "main":                 "splice",
