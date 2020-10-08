@@ -1,3 +1,4 @@
+const Trampoline = require('skip')
 const Strata = require('b-tree')
 // Now that the rest of the iteration utilities are based on riffle, which
 // slices the b-tree page array, we don't have to think hard at all about
@@ -17,15 +18,15 @@ module.exports = async function (operator, strata, iterator) {
             cursor.insert(index, key, parts, writes)
         }
     }
-    const writes = {}, promises = [], scope = { items: null }
+    const writes = {}, trampoline = new Trampoline, scope = { items: null }
     while (! iterator.done) {
-        iterator.next(promises, items => scope.items = items)
-        while (promises.length != 0) {
-            await promises.shift()
+        iterator.next(trampoline, items => scope.items = items)
+        while (trampoline.seek()) {
+            await trampoline.shift()
         }
         const operations = scope.items.map(item => operator(item))
         while (operations.length != 0) {
-            strata.search(promises, operations[0].key, cursor => {
+            strata.search(trampoline, operations[0].key, cursor => {
                 let { found, index } = cursor
                 upsert(cursor, index, found, operations.shift())
                 while (operations.length != 0) {
@@ -36,8 +37,8 @@ module.exports = async function (operator, strata, iterator) {
                     upsert(cursor, index, found, operations.shift())
                 }
             })
-            while (promises.length != 0) {
-                await promises.shift()
+            while (trampoline.seek()) {
+                await trampoline.shift()
             }
         }
     }

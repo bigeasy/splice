@@ -3,6 +3,7 @@ require('proof')(1, async okay => {
 
     const Strata = require('b-tree')
     const Cache = require('b-tree/cache')
+    const Trampoline = require('skip')
     const Destructible = require('destructible')
 
     const advance = require('advance')
@@ -32,9 +33,9 @@ require('proof')(1, async okay => {
         ]), items => items.map(item => { return { key: item, value: 'x' } }))
         const mutation = {
             done: false,
-            next (promises, consume, terminator = mutation) {
-                twiddled.next(promises, consume, terminator)
-                promises.push(Promise.resolve(true))
+            next (trampoline, consume, terminator = mutation) {
+                twiddled.next(trampoline, consume, terminator)
+                trampoline.push(Promise.resolve(true))
             }
         }
         await splice(function (item) {
@@ -43,16 +44,16 @@ require('proof')(1, async okay => {
                 parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
             }
         }, strata, mutation)
-        const gathered = [], promises = []
+        const gathered = [], trampoline = new Trampoline
         const iterator = riffle.forward(strata, Strata.MIN)
         while (! iterator.done) {
-            iterator.next(promises, items => {
+            iterator.next(trampoline, items => {
                 for (const item of items) {
                     gathered.push({ key: item.key, parts: item.parts })
                 }
             })
-            while (promises.length != 0) {
-                await promises.shift()
+            while (trampoline.seek()) {
+                await trampoline.shift()
             }
         }
         okay(gathered, [{
