@@ -1,6 +1,6 @@
 {
     "name":                 "splice",
-    "version":              "3.0.0-alpha.19",
+    "version":              "3.0.0-alpha.20",
     "description":
 
       "Merge an ordered collection of records into a Strata b-tree.",
