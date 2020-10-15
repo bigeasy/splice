@@ -26,7 +26,7 @@
     {
                             "advance":                      "3.0.0-alpha.3",
                             "b-tree":                       "2.0.0-alpha.52",
-                            "destructible":                 "7.0.0-alpha.11",
+                            "destructible":                 "7.0.0-alpha.12",
                             "proof":                        "^9.0.2",
                             "riffle":                       "2.0.0-alpha.34",
                             "skip":                         "0.1.0",
