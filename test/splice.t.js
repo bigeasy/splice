@@ -35,7 +35,7 @@ require('proof')(1, async okay => {
             done: false,
             next (trampoline, consume, terminator = mutation) {
                 twiddled.next(trampoline, consume, terminator)
-                trampoline.push(Promise.resolve(true))
+                trampoline.promised(async () => true)
             }
         }
         await splice(function (item) {
