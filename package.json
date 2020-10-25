@@ -1,6 +1,6 @@
 {
     "name":                 "splice",
-    "version":              "3.0.0-alpha.25",
+    "version":              "3.0.0-alpha.26",
     "description":
 
       "Merge an ordered collection of records into a Strata b-tree.",
@@ -28,8 +28,8 @@
                             "b-tree":                       "2.0.0-alpha.57",
                             "destructible":                 "7.0.0-alpha.14",
                             "proof":                        "^9.0.2",
-                            "riffle":                       "2.0.0-alpha.39",
                             "reciprocate":                  "0.0.1",
+                            "riffle":                       "2.0.0-alpha.39",
                             "twiddle":                      "2.0.0-alpha.6"
     },
     "main":                 "splice",
