@@ -28,7 +28,7 @@ require('proof')(1, async okay => {
         const destructible = new Destructible([ 'splice.t' ])
         const strata = new Strata(destructible, { directory, cache: new Cache })
         await strata.open()
-        const twiddled = twiddle(advance.forward([
+        const twiddled = twiddle(advance([
             [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
         ]), items => items.map(item => { return { key: item, value: 'x' } }))
         const mutation = {
