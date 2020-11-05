@@ -30,7 +30,7 @@
                             "proof":                        "^9.0.2",
                             "reciprocate":                  "0.0.2",
                             "riffle":                       "2.0.0-alpha.40",
-                            "twiddle":                      "2.0.0-alpha.6"
+                            "twiddle":                      "2.0.0-alpha.7"
     },
     "main":                 "splice",
     "scripts":
