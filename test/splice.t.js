@@ -45,7 +45,7 @@ require('proof')(1, async okay => {
             }
         }, strata, mutation)
         const gathered = [], trampoline = new Trampoline
-        const iterator = riffle.forward(strata, Strata.MIN)
+        const iterator = riffle(strata, Strata.MIN)
         while (! iterator.done) {
             iterator.next(trampoline, items => {
                 for (const item of items) {
