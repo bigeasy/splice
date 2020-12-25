@@ -2,9 +2,10 @@ require('proof')(1, async okay => {
     const path = require('path')
 
     const Strata = require('b-tree')
-    const Cache = require('b-tree/cache')
+    const Cache = require('magazine')
     const Trampoline = require('reciprocate')
     const Destructible = require('destructible')
+    const Turnstile = require('turnstile')
 
     const advance = require('advance')
     const riffle = require('riffle')
@@ -25,59 +26,65 @@ require('proof')(1, async okay => {
     })
 
     await async function () {
-        const destructible = new Destructible([ 'splice.t' ])
-        const strata = await Strata.open(destructible, { directory, cache: new Cache })
-        const twiddled = twiddle(advance([
-            [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
-        ]), items => items.map(item => { return { key: item, value: 'x' } }))
-        const mutation = {
-            done: false,
-            next (trampoline, consume, terminator = mutation) {
-                twiddled.next(trampoline, consume, terminator)
-                trampoline.promised(async () => true)
-            }
-        }
-        await splice(function (item) {
-            return {
-                key: item.key,
-                parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
-            }
-        }, strata, mutation)
-        const gathered = [], trampoline = new Trampoline
-        const iterator = riffle(strata, Strata.MIN)
-        while (! iterator.done) {
-            iterator.next(trampoline, items => {
-                for (const item of items) {
-                    gathered.push({ key: item.key, parts: item.parts })
+        const destructible = new Destructible($ => $(), 'splice.t')
+        const turnstile = new Turnstile(destructible.durable($ => $(), 'turnstile'))
+        const cache = new Cache
+        destructible.rescue($ => $(), 'test', async () => {
+            console.log(destructible.ephemeral)
+            const strata = await Strata.open(destructible.durable($ => $(), 'strata'), { directory, cache, turnstile })
+            const twiddled = twiddle(advance([
+                [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
+            ]), items => items.map(item => { return { key: item, value: 'x' } }))
+            const mutation = {
+                done: false,
+                next (trampoline, consume, terminator = mutation) {
+                    twiddled.next(trampoline, consume, terminator)
+                    trampoline.promised(async () => true)
                 }
-            })
-            while (trampoline.seek()) {
-                await trampoline.shift()
             }
-        }
-        okay(gathered, [{
-            key: 'a', parts: [ 'a', 'x' ]
-        }, {
-            key: 'c', parts: [ 'c', 'x' ]
-        }, {
-            key: 'e', parts: [ 'e' ]
-        }, {
-            key: 'f', parts: [ 'f', 'x' ]
-        }, {
-            key: 'k', parts: [ 'k' ]
-        }, {
-            key: 'l', parts: [ 'l' ]
-        }, {
-            key: 'p', parts: [ 'p', 'x' ]
-        }, {
-            key: 'q', parts: [ 'q', 'x' ]
-        }, {
-            key: 'r', parts: [ 'r', 'x' ]
-        }, {
-            key: 'v', parts: [ 'v' ]
-        }, {
-            key: 'z', parts: [ 'z', 'x' ]
-        }], 'splice')
-        strata.destructible.destroy().rejected
+            await splice(function (item) {
+                return {
+                    key: item.key,
+                    parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
+                }
+            }, strata, mutation)
+            const gathered = [], trampoline = new Trampoline
+            const iterator = riffle(strata, Strata.MIN)
+            while (! iterator.done) {
+                iterator.next(trampoline, items => {
+                    for (const item of items) {
+                        gathered.push({ key: item.key, parts: item.parts })
+                    }
+                })
+                while (trampoline.seek()) {
+                    await trampoline.shift()
+                }
+            }
+            okay(gathered, [{
+                key: 'a', parts: [ 'a', 'x' ]
+            }, {
+                key: 'c', parts: [ 'c', 'x' ]
+            }, {
+                key: 'e', parts: [ 'e' ]
+            }, {
+                key: 'f', parts: [ 'f', 'x' ]
+            }, {
+                key: 'k', parts: [ 'k' ]
+            }, {
+                key: 'l', parts: [ 'l' ]
+            }, {
+                key: 'p', parts: [ 'p', 'x' ]
+            }, {
+                key: 'q', parts: [ 'q', 'x' ]
+            }, {
+                key: 'r', parts: [ 'r', 'x' ]
+            }, {
+                key: 'v', parts: [ 'v' ]
+            }, {
+                key: 'z', parts: [ 'z', 'x' ]
+            }], 'splice')
+            destructible.destroy()
+        })
+        await destructible.rejected
     } ()
 })
