@@ -32,7 +32,7 @@
                             "reciprocate":                  "0.0.3",
                             "riffle":                       "2.0.0-alpha.46",
                             "turnstile":                    "6.0.0-alpha.40",
-                            "twiddle":                      "2.0.0-alpha.7"
+                            "twiddle":                      "2.0.0-alpha.8"
     },
     "main":                 "splice",
     "scripts":
