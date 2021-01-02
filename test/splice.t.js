@@ -2,7 +2,8 @@ require('proof')(1, async okay => {
     const path = require('path')
 
     const Strata = require('b-tree')
-    const Cache = require('magazine')
+    const FileSystem = require('b-tree/filesystem')
+    const Magazine = require('magazine')
     const Trampoline = require('reciprocate')
     const Destructible = require('destructible')
     const Turnstile = require('turnstile')
@@ -28,10 +29,12 @@ require('proof')(1, async okay => {
     await async function () {
         const destructible = new Destructible($ => $(), 'splice.t')
         const turnstile = new Turnstile(destructible.durable($ => $(), 'turnstile'))
-        const cache = new Cache
+        const pages = new Magazine
+        const handles = new FileSystem.HandleCache(new Magazine)
+        const storage = new FileSystem(directory, handles)
         destructible.rescue($ => $(), 'test', async () => {
             console.log(destructible.ephemeral)
-            const strata = await Strata.open(destructible.durable($ => $(), 'strata'), { directory, cache, turnstile })
+            const strata = await Strata.open(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile })
             const twiddled = twiddle(advance([
                 [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
             ]), items => items.map(item => { return { key: item, value: 'x' } }))
@@ -85,6 +88,7 @@ require('proof')(1, async okay => {
             }], 'splice')
             destructible.destroy()
         })
-        await destructible.rejected
+        await destructible.promise
+        await handles.shrink(0)
     } ()
 })
