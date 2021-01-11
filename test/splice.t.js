@@ -31,9 +31,9 @@ require('proof')(1, async okay => {
         const turnstile = new Turnstile(destructible.durable($ => $(), 'turnstile'))
         const pages = new Magazine
         const handles = new FileSystem.HandleCache(new Magazine)
-        const storage = new FileSystem(directory, handles)
+        const storage = await FileSystem.open({ directory, handles })
         destructible.rescue($ => $(), 'test', async () => {
-            const strata = await Strata.open(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile })
+            const strata = new Strata(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile })
             const twiddled = twiddle(advance([
                 [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
             ]), items => items.map(item => { return { key: item, value: 'x' } }))
