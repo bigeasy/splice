@@ -8,6 +8,7 @@ require('proof')(1, async okay => {
     const Trampoline = require('reciprocate')
     const Destructible = require('destructible')
     const Turnstile = require('turnstile')
+    const Fracture = require('fracture')
 
     const advance = require('advance')
     const riffle = require('riffle')
@@ -45,12 +46,13 @@ require('proof')(1, async okay => {
                     trampoline.promised(async () => true)
                 }
             }
+            const writes = new Fracture.CompletionSet
             await splice(function (item) {
                 return {
                     key: item.key,
                     parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
                 }
-            }, strata, mutation)
+            }, strata, mutation, writes)
             const gathered = [], trampoline = new Trampoline
             const iterator = riffle(strata, Strata.MIN)
             while (! iterator.done) {
@@ -86,6 +88,7 @@ require('proof')(1, async okay => {
             }, {
                 key: 'z', parts: [ 'z', 'x' ]
             }], 'splice')
+            await writes.clear()
             destructible.destroy()
         })
         await destructible.promise
