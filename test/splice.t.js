@@ -46,7 +46,7 @@ require('proof')(1, async okay => {
                     trampoline.promised(async () => true)
                 }
             }
-            const writes = new Fracture.CompletionSet
+            const writes = new Fracture.FutureSet
             await splice(function (item) {
                 return {
                     key: item.key,
@@ -88,7 +88,7 @@ require('proof')(1, async okay => {
             }, {
                 key: 'z', parts: [ 'z', 'x' ]
             }], 'splice')
-            await writes.clear()
+            await writes.join()
             destructible.destroy()
         })
         await destructible.promise
