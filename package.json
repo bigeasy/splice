@@ -25,7 +25,7 @@
     "devDependencies":
     {
                             "advance":                      "3.0.0-alpha.9",
-                            "b-tree":                       "2.0.0-alpha.95",
+                            "b-tree":                       "2.0.0-alpha.96",
                             "destructible":                 "7.0.0-alpha.48",
                             "fracture":                     "0.3.0-alpha.48",
                             "magazine":                     "6.0.0-alpha.6",
