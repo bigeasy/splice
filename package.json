@@ -32,7 +32,7 @@
                             "operation":                    "6.0.0-alpha.6",
                             "proof":                        "^9.0.2",
                             "reciprocate":                  "0.0.6",
-                            "riffle":                       "2.0.0-alpha.71",
+                            "riffle":                       "2.0.0-alpha.72",
                             "turnstile":                    "6.0.0-alpha.58",
                             "twiddle":                      "2.0.0-alpha.8"
     },
