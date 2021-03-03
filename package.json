@@ -27,7 +27,7 @@
                             "advance":                      "3.0.0-alpha.9",
                             "b-tree":                       "2.0.0-alpha.97",
                             "destructible":                 "7.0.0-alpha.50",
-                            "fracture":                     "0.3.0-alpha.50",
+                            "fracture":                     "0.3.0-alpha.51",
                             "magazine":                     "6.0.0-alpha.6",
                             "operation":                    "6.0.0-alpha.6",
                             "proof":                        "^9.0.2",
