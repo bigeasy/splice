@@ -9,13 +9,14 @@ const Strata = require('b-tree')
 //
 // There will only ever be one strand updating the primary tree.
 //
-module.exports = async function (operator, strata, iterator, writes) {
+module.exports = async function (stack, operator, strata, iterator) {
+    const promises = new Set
     function upsert (cursor, index, found, { key, parts }) {
         if (found) {
-            cursor.remove(index, writes)
+            promises.add(cursor.remove(stack, index))
         }
         if (parts != null) {
-            cursor.insert(index, key, parts, writes)
+            promises.add(cursor.insert(stack, index, key, parts))
         }
     }
     const trampoline = new Trampoline, scope = { items: null }
@@ -41,5 +42,8 @@ module.exports = async function (operator, strata, iterator, writes) {
                 await trampoline.shift()
             }
         }
+    }
+    for (const promise of promises) {
+        await promise
     }
 }

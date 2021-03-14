@@ -46,13 +46,12 @@ require('proof')(1, async okay => {
                     trampoline.promised(async () => true)
                 }
             }
-            const writes = new Fracture.FutureSet
-            await splice(function (item) {
+            await splice(Fracture.stack(), function (item) {
                 return {
                     key: item.key,
                     parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
                 }
-            }, strata, mutation, writes)
+            }, strata, mutation)
             const gathered = [], trampoline = new Trampoline
             const iterator = riffle(strata, Strata.MIN)
             while (! iterator.done) {
@@ -88,7 +87,6 @@ require('proof')(1, async okay => {
             }, {
                 key: 'z', parts: [ 'z', 'x' ]
             }], 'splice')
-            await writes.join()
             destructible.destroy()
         })
         await destructible.promise
