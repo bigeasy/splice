@@ -34,7 +34,7 @@ require('proof')(1, async okay => {
         const pages = new Magazine
         const handles = new Operation.Cache(new Magazine)
         const storage = new FileSystem.Writer(destructible.durable($ => $(), 'storage'), await FileSystem.open({ directory, handles }))
-        destructible.rescue($ => $(), 'test', async () => {
+        destructible.ephemeral($ => $(), 'test', async () => {
             const strata = new Strata(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile })
             const twiddled = twiddle(advance([
                 [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
