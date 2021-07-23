@@ -34,7 +34,7 @@
                             "reciprocate":                  "0.0.8",
                             "riffle":                       "2.0.0-alpha.85",
                             "turnstile":                    "6.0.0-alpha.77",
-                            "twiddle":                      "2.0.0-alpha.8"
+                            "twiddle":                      "2.0.0-alpha.9"
     },
     "main":                 "splice",
     "scripts":
