@@ -33,7 +33,7 @@
                             "proof":                        "^9.0.2",
                             "reciprocate":                  "0.0.8",
                             "riffle":                       "2.0.0-alpha.90",
-                            "turnstile":                    "6.0.0-alpha.79",
+                            "turnstile":                    "6.0.0-alpha.81",
                             "twiddle":                      "2.0.0-alpha.9"
     },
     "main":                 "splice",
