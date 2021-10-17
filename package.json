@@ -31,7 +31,7 @@
                             "magazine":                     "6.0.0-alpha.9",
                             "operation":                    "6.0.0-alpha.12",
                             "proof":                        "^9.0.2",
-                            "reciprocate":                  "0.0.8",
+                            "reciprocate":                  "0.0.9",
                             "riffle":                       "2.0.0-alpha.91",
                             "turnstile":                    "6.0.0-alpha.81",
                             "twiddle":                      "2.0.0-alpha.9"

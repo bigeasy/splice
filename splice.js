@@ -1,4 +1,4 @@
-const Trampoline = require('reciprocate')
+const { Trampoline } = require('reciprocate')
 const Strata = require('b-tree')
 // Now that the rest of the iteration utilities are based on riffle, which
 // slices the b-tree page array, we don't have to think hard at all about
