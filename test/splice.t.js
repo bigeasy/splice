@@ -1,6 +1,8 @@
 require('proof')(1, async okay => {
     const path = require('path')
 
+    const ascension = require('ascension')
+
     const Strata = require('b-tree')
     const Operation = require('operation')
     const FileSystem = require('b-tree/filesystem')
@@ -20,11 +22,17 @@ require('proof')(1, async okay => {
 
     const directory = path.resolve(__dirname, './tmp/splice')
 
+    function extractor (parts) {
+        return [ parts[0] ]
+    }
+
+    const comparator = ascension([ String ])
+
     await utilities.reset(directory)
     await utilities.serialize(directory, {
-      '0.0': [ [ '0.1', null ], [ '1.1', 'g' ], [ '1.3', 'p' ] ],
-      '0.1': [ [ 'right', 'g' ], [ 'insert', 0, 'b' ], [ 'insert', 1, 'c' ], [ 'insert', 2, 'e' ] ],
-      '1.1': [ [ 'right', 'p' ], [ 'insert', 0, 'g' ], [ 'insert', 1, 'k' ], [ 'insert', 2, 'l' ] ],
+      '0.0': [ [ '0.1', null ], [ '1.1', [ 'g' ] ], [ '1.3', [ 'p' ] ] ],
+      '0.1': [ [ 'right', [ 'g' ] ], [ 'insert', 0, 'b' ], [ 'insert', 1, 'c' ], [ 'insert', 2, 'e' ] ],
+      '1.1': [ [ 'right', [ 'p' ] ], [ 'insert', 0, 'g' ], [ 'insert', 1, 'k' ], [ 'insert', 2, 'l' ] ],
       '1.3': [ [ 'insert', 0, 'p' ], [ 'insert', 1, 'q' ], [ 'insert', 2, 'v' ], [ 'delete', 0 ] ]
     })
 
@@ -33,9 +41,9 @@ require('proof')(1, async okay => {
         const turnstile = new Turnstile(destructible.durable($ => $(), 'turnstile'))
         const pages = new Magazine
         const handles = new Operation.Cache(new Magazine)
-        const storage = new FileSystem.Writer(destructible.durable($ => $(), 'storage'), await FileSystem.open({ directory, handles }))
+        const storage = new FileSystem.Writer(destructible.durable($ => $(), 'storage'), await FileSystem.open({ directory, handles, extractor }))
         destructible.ephemeral($ => $(), 'test', async () => {
-            const strata = new Strata(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile })
+            const strata = new Strata(destructible.durable($ => $(), 'strata'), { storage, pages, turnstile, comparator })
             const twiddled = twiddle(advance([
                 [ 'a' ], [ 'b', 'c', 'f', 'g' ], [ 'p', 'q', 'r', 'z' ]
             ]), items => items.map(item => { return { key: item, value: 'x' } }))
@@ -48,7 +56,7 @@ require('proof')(1, async okay => {
             }
             await splice(Fracture.stack(), function (item) {
                 return {
-                    key: item.key,
+                    key: [ item.key ],
                     parts: item.key == 'b' || item.key == 'g' ? null : [ item.key, 'x' ]
                 }
             }, strata, mutation)
@@ -65,27 +73,27 @@ require('proof')(1, async okay => {
                 }
             }
             okay(gathered, [{
-                key: 'a', parts: [ 'a', 'x' ]
+                key: [ 'a' ], parts: [ 'a', 'x' ]
             }, {
-                key: 'c', parts: [ 'c', 'x' ]
+                key: [ 'c' ], parts: [ 'c', 'x' ]
             }, {
-                key: 'e', parts: [ 'e' ]
+                key: [ 'e' ], parts: [ 'e' ]
             }, {
-                key: 'f', parts: [ 'f', 'x' ]
+                key: [ 'f' ], parts: [ 'f', 'x' ]
             }, {
-                key: 'k', parts: [ 'k' ]
+                key: [ 'k' ], parts: [ 'k' ]
             }, {
-                key: 'l', parts: [ 'l' ]
+                key: [ 'l' ], parts: [ 'l' ]
             }, {
-                key: 'p', parts: [ 'p', 'x' ]
+                key: [ 'p' ], parts: [ 'p', 'x' ]
             }, {
-                key: 'q', parts: [ 'q', 'x' ]
+                key: [ 'q' ], parts: [ 'q', 'x' ]
             }, {
-                key: 'r', parts: [ 'r', 'x' ]
+                key: [ 'r' ], parts: [ 'r', 'x' ]
             }, {
-                key: 'v', parts: [ 'v' ]
+                key: [ 'v' ], parts: [ 'v' ]
             }, {
-                key: 'z', parts: [ 'z', 'x' ]
+                key: [ 'z' ], parts: [ 'z', 'x' ]
             }], 'splice')
             destructible.destroy()
         })
