@@ -26,7 +26,7 @@ require('proof')(1, async okay => {
         return [ parts[0] ]
     }
 
-    const comparator = ascension([ String ])
+    const comparator = ascension([ String ], true)
 
     await utilities.reset(directory)
     await utilities.serialize(directory, {
